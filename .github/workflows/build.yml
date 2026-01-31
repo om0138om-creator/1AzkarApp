@@ -8,7 +8,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # 1. إعداد الجافا (القطعة التي كانت ناقصة وتسبب الانهيار)
+      # هذا السطر سيحذف ملف المتطلبات إجبارياً لضمان نجاح البناء
+      - name: Force Delete Requirements
+        run: rm -f requirements.txt
+
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
@@ -25,10 +28,9 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev
 
-      - name: Install Flet
+      - name: Install Flet Tool
         run: pip install flet cookiecutter
 
-      # 2. تحديث Flutter لنسخة أحدث لضمان التوافق
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -39,7 +41,12 @@ jobs:
         run: |
           yes | flutter doctor --android-licenses
 
-      # 3. البناء (نستخدم yes لأننا نعلم أنه سيسأل)
       - name: Build APK
         run: |
           yes | flet build apk --verbose
+      
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: 1AzkarApp-APK
+          path: build/app/outputs/flutter-apk/app-release.apk
