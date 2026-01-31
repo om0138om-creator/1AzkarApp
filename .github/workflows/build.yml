@@ -13,11 +13,10 @@ jobs:
         with:
           python-version: "3.11"
 
-      # هذه هي الخطوة الجديدة لإصلاح الخطأ
       - name: Install Linux Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev libninja-dev pkg-config cmake xz-utils
+          sudo apt-get install -y libgtk-3-dev ninja-build pkg-config cmake xz-utils libstdc++-12-dev
 
       - name: Install Flet
         run: pip install flet cookiecutter
