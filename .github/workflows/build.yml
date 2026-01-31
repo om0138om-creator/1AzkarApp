@@ -32,7 +32,8 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.24.2"
+          # التغيير الجوهري هنا: نطلب القناة المستقرة ليجلب أحدث إصدار (3.27.x)
+          channel: 'stable'
           cache: true
 
       - name: Accept Android Licenses
@@ -42,8 +43,7 @@ jobs:
           fi
 
       - name: Build APK
-        # هنا التعديل: أعدنا "yes |" للموافقة التلقائية على تحميل الأدوات
-        # وحذفنا "--include-assets" لأنها تسبب خطأ
+        # أبقينا على yes احتياطياً، لكن الآن لن يحدث تعارض
         run: |
           yes | flet build apk --verbose
       
