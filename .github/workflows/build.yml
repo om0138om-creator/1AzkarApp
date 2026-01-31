@@ -8,6 +8,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # 1. إعداد الجافا (القطعة التي كانت ناقصة وتسبب الانهيار)
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -21,16 +28,18 @@ jobs:
       - name: Install Flet
         run: pip install flet cookiecutter
 
+      # 2. تحديث Flutter لنسخة أحدث لضمان التوافق
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.22.0"
+          flutter-version: "3.24.2"
           cache: true
 
       - name: Accept Android Licenses
         run: |
           yes | flutter doctor --android-licenses
 
+      # 3. البناء (نستخدم yes لأننا نعلم أنه سيسأل)
       - name: Build APK
         run: |
           yes | flet build apk --verbose
