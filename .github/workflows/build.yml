@@ -1,38 +1,25 @@
-name: Build 1AzkarApp APK
-
-on:
-  push:
-    branches: [ main ]
-  workflow_dispatch:
+name: Build APK
+on: [push, workflow_dispatch]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Setup Python
-        uses: actions/setup-python@v4
+      - uses: actions/checkout@v3
+      
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-
-      - name: Install Dependencies
-        run: |
-          pip install flet
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
+          
+      - run: pip install flet
+      
+      - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.19.0'
-
-      - name: Build APK
-        run: |
-          flet build apk --verbose
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v3
+          
+      - run: flet build apk --verbose
+      
+      - uses: actions/upload-artifact@v3
         with:
-          name: 1AzkarApp-Release
+          name: 1AzkarApp-APK
           path: build/app/outputs/flutter-apk/app-release.apk
