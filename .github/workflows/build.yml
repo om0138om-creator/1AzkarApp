@@ -8,9 +8,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # هذا السطر سيحذف ملف المتطلبات إجبارياً لضمان نجاح البناء
-      - name: Force Delete Requirements
-        run: rm -f requirements.txt
+      # تم حذف خطوة حذف requirements.txt لأنها تدمر التطبيق
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -29,7 +27,10 @@ jobs:
           sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev
 
       - name: Install Flet Tool
-        run: pip install flet cookiecutter
+        # نقوم بتحديث pip وتثبيت flet
+        run: |
+          python -m pip install --upgrade pip
+          pip install flet cookiecutter
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
@@ -42,8 +43,10 @@ jobs:
           yes | flutter doctor --android-licenses
 
       - name: Build APK
+        # تم إزالة "yes |" لنرى الأخطاء بوضوح
+        # وتم إضافة --include-assets لضمان وجود الخط
         run: |
-          yes | flet build apk --verbose
+          flet build apk --verbose --include-assets myfont.otf
       
       - name: Upload APK
         uses: actions/upload-artifact@v4
