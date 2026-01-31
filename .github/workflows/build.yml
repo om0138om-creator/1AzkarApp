@@ -33,4 +33,4 @@ jobs:
 
       - name: Build APK
         run: |
-          flet build apk --verbose --no-android-splash
+          yes | flet build apk --verbose
