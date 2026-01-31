@@ -36,16 +36,16 @@ jobs:
           cache: true
 
       - name: Accept Android Licenses
-        # تم إزالة "yes |" لأن الـ action يقوم بذلك تلقائياً أحياناً، ولكن سنتركه احتياطياً بصيغة أفضل
         run: |
           if flutter doctor --android-licenses --help > /dev/null 2>&1; then
             yes | flutter doctor --android-licenses
           fi
 
       - name: Build APK
-        # تم تصحيح الأمر وإزالة --include-assets
+        # هنا التعديل: أعدنا "yes |" للموافقة التلقائية على تحميل الأدوات
+        # وحذفنا "--include-assets" لأنها تسبب خطأ
         run: |
-          flet build apk --verbose
+          yes | flet build apk --verbose
       
       - name: Upload APK
         uses: actions/upload-artifact@v4
