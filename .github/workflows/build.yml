@@ -32,8 +32,8 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          # هنا الحل: حددنا الإصدار 3.27.1 بدقة كما طلب الخطأ
-          flutter-version: "3.27.1"
+          # نستخدم القناة المستقرة لتتوافق مع أحدث إصدار من Flet
+          channel: 'stable'
           cache: true
 
       - name: Accept Android Licenses
@@ -43,10 +43,10 @@ jobs:
           fi
 
       - name: Build APK
-        # استبدلنا "yes |" بـ "echo y |" لأنها أكثر أماناً وتمنع خطأ Broken pipe
-        # وتقوم بالموافقة لمرة واحدة فقط إذا اضطر للسؤال
+        # أزلنا "yes |" وأزلنا "echo" لنرى الخطأ الحقيقي
+        # إذا نجح، فالحمد لله. إذا فشل، سيظهر السبب الحقيقي بدلاً من Broken pipe
         run: |
-          echo "y" | flet build apk --verbose
+          flet build apk --verbose
       
       - name: Upload APK
         uses: actions/upload-artifact@v4
