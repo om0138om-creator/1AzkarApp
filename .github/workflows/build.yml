@@ -41,13 +41,24 @@ jobs:
             yes | flutter doctor --android-licenses
           fi
 
-      - name: Build APK
-        # التعديل الوحيد هنا: أضفنا --project-name لنغير الاسم الداخلي ونحذف الرقم 1
+      # هذه هي الخطوة الجديدة: ننشئ مجلداً نظيفاً وننقل ملفاتك إليه
+      - name: Fix Project Name (Move files)
         run: |
-          flet build apk --verbose --project-name azkar_app
+          mkdir azkar_app
+          mv main.py azkar_app/
+          mv requirements.txt azkar_app/
+          # ننقل ملف الخط إذا كان موجوداً، وإذا لم يوجد نتجاهل الأمر
+          if [ -f "myfont.otf" ]; then mv myfont.otf azkar_app/; fi
+
+      - name: Build APK
+        # الآن نبني التطبيق من داخل المجلد الجديد النظيف
+        run: |
+          cd azkar_app
+          flet build apk --verbose
       
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: AzkarApp-APK
-          path: build/app/outputs/flutter-apk/app-release.apk
+          # لاحظ أن مسار الملف الناتج سيتغير لأنه داخل المجلد الجديد
+          path: azkar_app/build/app/outputs/flutter-apk/app-release.apk
