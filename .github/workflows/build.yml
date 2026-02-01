@@ -25,9 +25,10 @@ jobs:
           sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev
 
       - name: Install Flet Tool
+        # هنا نثبت أداة البناء بنفس الإصدار المستقر لضمان التوافق
         run: |
           python -m pip install --upgrade pip
-          pip install flet cookiecutter
+          pip install flet==0.25.2 cookiecutter
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
@@ -42,14 +43,16 @@ jobs:
           fi
 
       - name: Prepare Project Files
+        # التغيير الجذري هنا: نحدد الإصدار 0.25.2 بدلاً من أحدث إصدار
         run: |
           mkdir azkar_app
           mv main.py azkar_app/
-          echo "flet" > azkar_app/requirements.txt
+          echo "flet==0.25.2" > azkar_app/requirements.txt
           if [ -f "myfont.otf" ]; then mv myfont.otf azkar_app/; fi
           if [ -d "assets" ]; then mv assets azkar_app/; fi
 
       - name: Build APK
+        # نقوم بالبناء، وبما أننا ثبتنا إصداراً قديماً، قد يطلب تحميل قالب قديم، وسنوافق عليه
         run: |
           cd azkar_app
           flet build apk --verbose
@@ -58,5 +61,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: AzkarApp-APK
-          # التغيير السحري هنا: النجمتان تعنيان "ابحث في أي مكان عن أي ملف ينتهي بـ .apk"
           path: "**/*.apk"
