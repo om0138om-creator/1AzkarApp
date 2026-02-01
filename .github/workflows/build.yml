@@ -41,21 +41,12 @@ jobs:
             yes | flutter doctor --android-licenses
           fi
 
-      # التعديل هنا: ننشئ المجلد، وننقل الملفات الموجودة فقط، وننشئ ملف المتطلبات يدوياً
       - name: Prepare Project Files
         run: |
           mkdir azkar_app
-          
-          # نقل ملف الكود الرئيسي
           mv main.py azkar_app/
-          
-          # إنشاء ملف requirements.txt جديد بدلاً من البحث عن القديم
           echo "flet" > azkar_app/requirements.txt
-          
-          # نقل الخط إذا وجد
           if [ -f "myfont.otf" ]; then mv myfont.otf azkar_app/; fi
-          
-          # نقل مجلد الصور إذا وجد (احتياطياً)
           if [ -d "assets" ]; then mv assets azkar_app/; fi
 
       - name: Build APK
@@ -67,4 +58,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: AzkarApp-APK
-          path: azkar_app/build/app/outputs/flutter-apk/app-release.apk
+          # التغيير السحري هنا: النجمتان تعنيان "ابحث في أي مكان عن أي ملف ينتهي بـ .apk"
+          path: "**/*.apk"
