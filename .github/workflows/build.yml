@@ -32,8 +32,8 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          # التغيير الجوهري هنا: نطلب القناة المستقرة ليجلب أحدث إصدار (3.27.x)
-          channel: 'stable'
+          # هنا الحل: حددنا الإصدار 3.27.1 بدقة كما طلب الخطأ
+          flutter-version: "3.27.1"
           cache: true
 
       - name: Accept Android Licenses
@@ -43,9 +43,10 @@ jobs:
           fi
 
       - name: Build APK
-        # أبقينا على yes احتياطياً، لكن الآن لن يحدث تعارض
+        # استبدلنا "yes |" بـ "echo y |" لأنها أكثر أماناً وتمنع خطأ Broken pipe
+        # وتقوم بالموافقة لمرة واحدة فقط إذا اضطر للسؤال
         run: |
-          yes | flet build apk --verbose
+          echo "y" | flet build apk --verbose
       
       - name: Upload APK
         uses: actions/upload-artifact@v4
