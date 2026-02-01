@@ -25,10 +25,10 @@ jobs:
           sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev
 
       - name: Install Flet Tool
-        # هنا نثبت أداة البناء بنفس الإصدار المستقر لضمان التوافق
+        # نستخدم أحدث إصدار من الأدوات
         run: |
           python -m pip install --upgrade pip
-          pip install flet==0.25.2 cookiecutter
+          pip install flet cookiecutter
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
@@ -43,19 +43,22 @@ jobs:
           fi
 
       - name: Prepare Project Files
-        # التغيير الجذري هنا: نحدد الإصدار 0.25.2 بدلاً من أحدث إصدار
+        # ننقل الملفات لمجلد جديد اسمه نظيف (بدون أرقام)
         run: |
           mkdir azkar_app
           mv main.py azkar_app/
-          echo "flet==0.25.2" > azkar_app/requirements.txt
+          # ننشئ ملف المتطلبات
+          echo "flet" > azkar_app/requirements.txt
+          # ننقل الخط والملفات الإضافية إذا وجدت
           if [ -f "myfont.otf" ]; then mv myfont.otf azkar_app/; fi
           if [ -d "assets" ]; then mv assets azkar_app/; fi
 
       - name: Build APK
-        # نقوم بالبناء، وبما أننا ثبتنا إصداراً قديماً، قد يطلب تحميل قالب قديم، وسنوافق عليه
+        # هنا الحل: أضفنا --permissions android.permission.INTERNET
+        # هذا السطر سيجعل المحرك يعمل وتختفي الشاشة البيضاء
         run: |
           cd azkar_app
-          flet build apk --verbose
+          flet build apk --verbose --permissions android.permission.INTERNET
       
       - name: Upload APK
         uses: actions/upload-artifact@v4
