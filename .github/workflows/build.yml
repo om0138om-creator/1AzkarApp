@@ -41,17 +41,24 @@ jobs:
             yes | flutter doctor --android-licenses
           fi
 
-      # هذه هي الخطوة الجديدة: ننشئ مجلداً نظيفاً وننقل ملفاتك إليه
-      - name: Fix Project Name (Move files)
+      # التعديل هنا: ننشئ المجلد، وننقل الملفات الموجودة فقط، وننشئ ملف المتطلبات يدوياً
+      - name: Prepare Project Files
         run: |
           mkdir azkar_app
+          
+          # نقل ملف الكود الرئيسي
           mv main.py azkar_app/
-          mv requirements.txt azkar_app/
-          # ننقل ملف الخط إذا كان موجوداً، وإذا لم يوجد نتجاهل الأمر
+          
+          # إنشاء ملف requirements.txt جديد بدلاً من البحث عن القديم
+          echo "flet" > azkar_app/requirements.txt
+          
+          # نقل الخط إذا وجد
           if [ -f "myfont.otf" ]; then mv myfont.otf azkar_app/; fi
+          
+          # نقل مجلد الصور إذا وجد (احتياطياً)
+          if [ -d "assets" ]; then mv assets azkar_app/; fi
 
       - name: Build APK
-        # الآن نبني التطبيق من داخل المجلد الجديد النظيف
         run: |
           cd azkar_app
           flet build apk --verbose
@@ -60,5 +67,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: AzkarApp-APK
-          # لاحظ أن مسار الملف الناتج سيتغير لأنه داخل المجلد الجديد
           path: azkar_app/build/app/outputs/flutter-apk/app-release.apk
