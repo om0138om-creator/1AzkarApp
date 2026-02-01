@@ -32,7 +32,6 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          # نستخدم القناة المستقرة لتتوافق مع أحدث إصدار من Flet
           channel: 'stable'
           cache: true
 
@@ -43,13 +42,12 @@ jobs:
           fi
 
       - name: Build APK
-        # أزلنا "yes |" وأزلنا "echo" لنرى الخطأ الحقيقي
-        # إذا نجح، فالحمد لله. إذا فشل، سيظهر السبب الحقيقي بدلاً من Broken pipe
+        # التعديل الوحيد هنا: أضفنا --project-name لنغير الاسم الداخلي ونحذف الرقم 1
         run: |
-          flet build apk --verbose
+          flet build apk --verbose --project-name azkar_app
       
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: 1AzkarApp-APK
+          name: AzkarApp-APK
           path: build/app/outputs/flutter-apk/app-release.apk
